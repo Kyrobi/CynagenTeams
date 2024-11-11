@@ -1,0 +1,7 @@
+name: CynagenTeams
+version: '1.0-SNAPSHOT'
+main: me.kyrobi.cynagenteams.CynagenTeams
+api-version: '1.21'
+commands:
+  teams:
+    description: Teams list command

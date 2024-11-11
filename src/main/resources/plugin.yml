@@ -1,0 +1,7 @@
+name: CynagenTeams
+version: '${project.version}'
+main: me.kyrobi.cynagenteams.CynagenTeams
+api-version: '1.21'
+commands:
+  teams:
+    description: Teams list command
