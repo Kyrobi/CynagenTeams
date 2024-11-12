@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
+import static me.kyrobi.cynagenteams.CynagenTeams.getPluginInstance;
 import static me.kyrobi.cynagenteams.Datastore.myDataStore;
 import static me.kyrobi.cynagenteams.Util.*;
 
@@ -53,13 +54,19 @@ public class Menu {
             lore.add(ChatColor.GRAY + "------------");
 
             Party party = listing.getParty();
+            if(party == null){
+                continue;
+            }
             OfflinePlayer partyLeader = Bukkit.getOfflinePlayer(party.getLeader().getUniqueId());
+            lore.add(ChatColor.GRAY + "Party Name: " + ChatColor.WHITE + party.getName());
             lore.add(ChatColor.GRAY + "Leader: " + ChatColor.WHITE + partyLeader.getName());
             lore.add(ChatColor.GRAY + "Leader Last Online: " + ChatColor.WHITE + timeAgo(partyLeader.getLastLogin()));
             lore.add(ChatColor.GRAY + "Members: " + ChatColor.WHITE + listing.getParty().getMembers().size() + "/" + PartyAPI.getMaxPartySize());
             lore.add(ChatColor.GRAY + "Party Level: " + ChatColor.WHITE + party.getLevel());
             lore.add(ChatColor.GRAY + "Members online: " + ChatColor.WHITE + party.getOnlineMembers().size());
             lore.add(ChatColor.GRAY + "Date Listed: " + ChatColor.WHITE + formatCreationDate(listing.getCreationDate()));
+            lore.add(ChatColor.GRAY + " ");
+            lore.add(ChatColor.GREEN + "" + ChatColor.BOLD + "Click to join!");
 
             itemMeta.setLore(lore);
 
@@ -111,6 +118,16 @@ public class Menu {
             getEssentialsAPI().getUser(party.getLeader().getUniqueId()).addMail( "\n" + player.getName() + " has joined your party from the recruitment board! \n");
             PartyAPI.addToParty(playerClicked, party.getName(), false);
             playerClicked.sendMessage(ChatColor.GREEN + "You joined " + party.getName() + "!");
+            ListingData partyData = myDataStore.get(party.getName());
+
+            Bukkit.getScheduler().runTaskLater(getPluginInstance(), ()->{
+                playerClicked.sendMessage(ChatColor.GRAY + "----------------");
+                playerClicked.sendMessage(ChatColor.GRAY + " ");
+                playerClicked.sendMessage(ChatColor.GOLD + "Party Message:");
+                playerClicked.sendMessage(ChatColor.WHITE + partyData.getMotd());
+                playerClicked.sendMessage(ChatColor.GRAY + " ");
+                playerClicked.sendMessage(ChatColor.GRAY + "----------------");
+            }, 20 * 5);
         });
 
         gui.addPane(pages);
@@ -153,14 +170,14 @@ public class Menu {
         lore.add(" ");
 
         lore.add(ChatColor.GREEN + "List Party To Recruitment Board");
-        lore.add(ChatColor.WHITE + "/team add");
+        lore.add(ChatColor.WHITE + "/teams add");
         lore.add(ChatColor.GRAY + "Adds your party to this list for");
         lore.add(ChatColor.GRAY + "others to find and join.");
         lore.add(ChatColor.GRAY + "(You need to be party leader)");
         lore.add(" ");
 
         lore.add(ChatColor.GREEN + "Remove Party From Recruitment Board");
-        lore.add(ChatColor.WHITE + "/team remove");
+        lore.add(ChatColor.WHITE + "/teams remove");
         lore.add(ChatColor.GRAY + "Removes your party from this list.");
         lore.add(ChatColor.GRAY + "(You need to be party leader)");
         lore.add(" ");
@@ -171,9 +188,11 @@ public class Menu {
         lore.add(ChatColor.GRAY + "/teams description my awesome party!");
         lore.add(" ");
 
-        lore.add(ChatColor.GREEN + "Create Party");
-        lore.add(ChatColor.WHITE + "/party create <name>");
-        lore.add(ChatColor.GRAY + "If you wish to create your own party");
+        lore.add(ChatColor.GREEN + "Change Party Message");
+        lore.add(ChatColor.WHITE + "/teams message <message>");
+        lore.add(ChatColor.GRAY + "Set a message for when players join");
+        lore.add(ChatColor.GRAY + "your party. For example, putting info");
+        lore.add(ChatColor.GRAY + "on where to meet up.");
         lore.add(" ");
 
         guideMeta.setLore(lore);
@@ -183,6 +202,31 @@ public class Menu {
         navigation.addItem(new GuiItem(guideButton, event -> {
             event.setCancelled(true);
         }), 4, 0);
+
+        // Next page button
+        ItemStack teleportButton = new ItemStack(Material.ENDER_PEARL);
+        ItemMeta teleportMeta = teleportButton.getItemMeta();
+
+        List<String> loreTeleport = new ArrayList<>();
+
+        loreTeleport.add(ChatColor.GRAY + "You can set a warp with ");
+        loreTeleport.add(ChatColor.GOLD + "/pwarp set <name> ");
+        loreTeleport.add(ChatColor.GRAY + " ");
+        loreTeleport.add(ChatColor.GRAY + "You can use this warp as a");
+        loreTeleport.add(ChatColor.GRAY + "warp for all your party");
+        loreTeleport.add(ChatColor.GRAY + "members to meet up!");
+
+        teleportMeta.setLore(loreTeleport);
+
+        teleportMeta.setDisplayName(ChatColor.GOLD + "Party Warp");
+        teleportButton.setItemMeta(teleportMeta);
+        navigation.addItem(new GuiItem(teleportButton, event -> {
+            event.setCancelled(true);
+            if (pages.getPage() < pages.getPages() - 1) {
+                pages.setPage(pages.getPage() + 1);
+                gui.update();
+            }
+        }), 5, 0);
 
         // Next page button
         ItemStack nextButton = new ItemStack(Material.ARROW);

@@ -21,7 +21,8 @@ public class Datastore {
             CREATE TABLE IF NOT EXISTS listings (
                 name TEXT PRIMARY KEY,
                 creationDate INTEGER NOT NULL,
-                description TEXT NOT NULL
+                description TEXT NOT NULL,
+                motd TEXT NOT NULL
             );
             """;
 
@@ -56,8 +57,9 @@ public class Datastore {
                 String name = rs.getString("name");
                 long creationDate = rs.getLong("creationDate");
                 String description = rs.getString("description");
+                String motd = rs.getString("motd");
 
-                ListingData listingData = new ListingData(name, creationDate, description);
+                ListingData listingData = new ListingData(name, creationDate, description, motd);
                 myDataStore.put(name, listingData);
             }
 
@@ -69,7 +71,7 @@ public class Datastore {
     }
 
     public static void uninitialize() {
-        String insertOrReplaceSQL = "INSERT OR REPLACE INTO listings (name, creationDate, description) VALUES (?, ?, ?)";
+        String insertOrReplaceSQL = "INSERT OR REPLACE INTO listings (name, creationDate, description, motd) VALUES (?, ?, ?, ?)";
 
         final int BATCH_SIZE = 1000;
 
@@ -83,6 +85,7 @@ public class Datastore {
                 pstmt.setString(1, listingData.getPartyName());
                 pstmt.setLong(2, listingData.getCreationDate());
                 pstmt.setString(3, listingData.getDescription());
+                pstmt.setString(4, listingData.getMotd());
                 pstmt.addBatch();
 
                 if (++count % BATCH_SIZE == 0) {

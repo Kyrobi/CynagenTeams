@@ -17,14 +17,16 @@ public class ListingData {
 
     private String partyName = "";
     private String description = "";
+    private String motd = "";
     private long creationDate = 0;
     private boolean isPartyStillValid; // Stores if the party still exists.
 
-    public ListingData(String partyName, long creationDate, String description){
+    public ListingData(String partyName, long creationDate, String description, String motd){
 
         this.partyName = partyName;
         this.creationDate = creationDate;
         this.description = description;
+        this.motd = motd;
 
         this.isPartyStillValid = isPartyStillValid(partyName);
     }

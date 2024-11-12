@@ -47,6 +47,7 @@ public class CommandHandler implements CommandExecutor {
                 return false;
             }
 
+
             if(option.equals("add")){
                 myDataStore.put(partyName, new ListingData(partyName));
                 player.sendMessage(ChatColor.GREEN + "Added your party to the recruitment board!");
@@ -59,14 +60,30 @@ public class CommandHandler implements CommandExecutor {
                 return false;
             }
 
+            ListingData data = myDataStore.get(partyName);
+            if(data == null){
+                player.sendMessage(ChatColor.RED + "You need to list your party first!");
+                return false;
+            }
+
             if(option.equals("description") && args.length >= 2){
                 StringBuilder stringBuilder = new StringBuilder();
                 for(int i = 1; i < args.length; i++){
                     stringBuilder.append(args[i] + " ");
                 }
-                ListingData data = myDataStore.get(partyName);
                 data.setDescription(stringBuilder.toString().trim());
                 player.sendMessage(ChatColor.GREEN + "Listing description set!");
+                return false;
+            }
+
+            if(option.equals("message") && args.length >= 2){
+                StringBuilder stringBuilder = new StringBuilder();
+                for(int i = 1; i < args.length; i++){
+                    stringBuilder.append(args[i] + " ");
+                }
+                data.setMotd(stringBuilder.toString());
+                player.sendMessage(ChatColor.GREEN + "Party message set! Your message is:");
+                player.sendMessage(ChatColor.GRAY + stringBuilder.toString());
                 return false;
             }
         }
