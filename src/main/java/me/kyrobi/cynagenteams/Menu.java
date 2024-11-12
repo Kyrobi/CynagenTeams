@@ -160,6 +160,27 @@ public class Menu {
             }
         }), 0, 0);
 
+        /*
+        Leaderboard
+         */
+        ItemStack leaderboardButton = new ItemStack(Material.DIAMOND);
+        ItemMeta leaderboardMeta = leaderboardButton.getItemMeta();
+
+        List<String> loreleaderboard = new ArrayList<>();
+
+        loreleaderboard.add(ChatColor.GREEN + "Party with the highest levels");
+
+        leaderboardMeta.setLore(loreleaderboard);
+
+        leaderboardMeta.setDisplayName(ChatColor.GOLD + "Party Leaderboard");
+        leaderboardButton.setItemMeta(leaderboardMeta);
+        navigation.addItem(new GuiItem(leaderboardButton, event -> {
+            event.setCancelled(true);
+            showLeaderboard(player);
+        }), 3, 0);
+
+
+
         // Guide Button
         ItemStack guideButton = new ItemStack(Material.BOOK);
         ItemMeta guideMeta = guideButton.getItemMeta();
@@ -241,6 +262,85 @@ public class Menu {
             }
         }), 8, 0);
 
+
+
+        gui.addPane(navigation);
+        gui.show(player);
+    }
+
+    public static void showLeaderboard(Player player){
+        // Create the main GUI with 6 rows
+        ChestGui gui = new ChestGui(6, "Cynagen Party Leaderboard");
+
+        List<ItemStack> items = new ArrayList<>();
+
+        List<Party> allParties = new ArrayList<>(PartyAPI.getParties());
+
+        // Newest listings first
+        allParties.sort(Comparator.comparingLong(Party::getLevel).reversed());
+
+        int counter = 0;
+        for(Party party: allParties){
+
+            if(counter == 25){
+                continue;
+            }
+
+            ItemStack itemStack = new ItemStack(Material.PAPER);
+
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            itemMeta.setDisplayName(ChatColor.GOLD + party.getName());
+
+            List<String> lore = new ArrayList<>();
+
+            lore.add(ChatColor.GRAY + "Members: " + ChatColor.WHITE + party.getMembers().size() + "/" + PartyAPI.getMaxPartySize());
+            lore.add(ChatColor.GRAY + "Party Level: " + ChatColor.WHITE + party.getLevel());
+
+            itemMeta.setLore(lore);
+
+            itemStack.setItemMeta(itemMeta);
+            items.add(itemStack);
+            ++counter;
+        }
+
+        // Create the paginated pane for content (5 rows)
+        PaginatedPane pages = new PaginatedPane(0, 0, 9, 4);
+
+        // Add your items to the 'items' list here
+        pages.populateWithItemStacks(items);
+
+        // Add click handler for items
+        pages.setOnClick(event -> {
+            event.setCancelled(true);
+        });
+
+        gui.addPane(pages);
+
+        // Create black glass background for navigation bar
+        OutlinePane background = new OutlinePane(0, 4, 9, 1);
+
+        ItemStack borderBlock = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+        ItemMeta borderMeta = borderBlock.getItemMeta();
+        borderMeta.setDisplayName(ChatColor.GRAY + "-");
+        borderBlock.setItemMeta(borderMeta);
+        background.addItem(new GuiItem(borderBlock, event -> event.setCancelled(true)));
+        background.setRepeat(true);
+        background.setPriority(Pane.Priority.LOWEST);
+        gui.addPane(background);
+
+        // Create navigation pane
+        StaticPane navigation = new StaticPane(0, 5, 9, 1);
+
+        // Back Button
+        ItemStack guideButton = new ItemStack(Material.BARRIER);
+        ItemMeta guideMeta = guideButton.getItemMeta();
+
+        guideMeta.setDisplayName(ChatColor.GOLD + "Back");
+        guideButton.setItemMeta(guideMeta);
+        navigation.addItem(new GuiItem(guideButton, event -> {
+            event.setCancelled(true);
+            showGListings(player);
+        }), 4, 0);
 
 
         gui.addPane(navigation);
