@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -98,6 +99,12 @@ public class Util {
 
     public static Essentials getEssentialsAPI(){
         return (Essentials) Bukkit.getServer().getPluginManager().getPlugin("Essentials");
+    }
+
+    public static String addCommaToNumber(int number){
+        DecimalFormat df = new DecimalFormat("#,###");
+        String formatted = df.format(number);
+        return formatted;
     }
 
 }

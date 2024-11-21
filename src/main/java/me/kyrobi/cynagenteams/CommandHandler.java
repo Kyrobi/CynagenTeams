@@ -2,6 +2,8 @@ package me.kyrobi.cynagenteams;
 
 import com.gmail.nossr50.api.PartyAPI;
 import com.gmail.nossr50.datatypes.party.Party;
+import com.ibm.icu.text.MessagePattern;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -29,6 +31,9 @@ public class CommandHandler implements CommandExecutor {
             showGListings(player);
             return true;
         }
+
+//        Player player1 = Bukkit.getPlayer("MaddoxJKingsley");
+//        PartyAPI.addToParty(player1, "Lemons", true);
 
         System.out.println("Args length: " + args.length);
 

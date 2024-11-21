@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -163,7 +164,7 @@ public class Menu {
         /*
         Leaderboard
          */
-        ItemStack leaderboardButton = new ItemStack(Material.DIAMOND);
+        ItemStack leaderboardButton = new ItemStack(Material.PLAYER_HEAD);
         ItemMeta leaderboardMeta = leaderboardButton.getItemMeta();
 
         List<String> loreleaderboard = new ArrayList<>();
@@ -277,7 +278,7 @@ public class Menu {
         List<Party> allParties = new ArrayList<>(PartyAPI.getParties());
 
         // Newest listings first
-        allParties.sort(Comparator.comparingLong(Party::getLevel).reversed());
+        allParties.sort(Comparator.comparingDouble(Party::getXp).reversed());
 
         int counter = 0;
         for(Party party: allParties){
@@ -289,12 +290,13 @@ public class Menu {
             ItemStack itemStack = new ItemStack(Material.PAPER);
 
             ItemMeta itemMeta = itemStack.getItemMeta();
-            itemMeta.setDisplayName(ChatColor.GOLD + party.getName());
+            itemMeta.setDisplayName(ChatColor.WHITE + "#" + String.valueOf(counter + 1) + ". " + ChatColor.GOLD + party.getName());
 
             List<String> lore = new ArrayList<>();
 
             lore.add(ChatColor.GRAY + "Members: " + ChatColor.WHITE + party.getMembers().size() + "/" + PartyAPI.getMaxPartySize());
-            lore.add(ChatColor.GRAY + "Party Level: " + ChatColor.WHITE + party.getLevel());
+            lore.add(ChatColor.GRAY + "Party Level: " + ChatColor.WHITE + party.getLevel() + " " + ChatColor.GRAY + "(bugged i think)");
+            lore.add(ChatColor.GRAY + "Party EXP: " + ChatColor.WHITE + addCommaToNumber((int)party.getXp()));
 
             itemMeta.setLore(lore);
 
