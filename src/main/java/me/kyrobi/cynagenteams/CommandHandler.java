@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import static me.kyrobi.cynagenteams.Datastore.myDataStore;
 import static me.kyrobi.cynagenteams.Menu.showGListings;
+import static me.kyrobi.cynagenteams.Menu.showLeaderboard;
 import static me.kyrobi.cynagenteams.Util.getPartyFromName;
 
 public class CommandHandler implements CommandExecutor {
@@ -40,6 +41,11 @@ public class CommandHandler implements CommandExecutor {
         if(args.length >= 1){
             String option = args[0];
             System.out.println("Option: " + option);
+
+            if(option.equals("leaderboard")){
+                showLeaderboard(player);
+                return false;
+            }
 
             if(!PartyAPI.inParty(player)){
                 player.sendMessage(ChatColor.RED + "You need to be a in party to use this command!");
