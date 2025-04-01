@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -129,6 +130,11 @@ public class Menu {
                 playerClicked.sendMessage(ChatColor.GRAY + " ");
                 playerClicked.sendMessage(ChatColor.GRAY + "----------------");
             }, 20 * 5);
+
+            Bukkit.getScheduler().runTask(getPluginInstance(), () -> {
+                ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+                Bukkit.dispatchCommand(console, "staffnotify 1268264904888942635 " + playerClicked.getName() + " joined " + party.getName());
+            });
         });
 
         gui.addPane(pages);

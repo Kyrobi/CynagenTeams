@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import static me.kyrobi.cynagenteams.Datastore.myDataStore;
+import static me.kyrobi.cynagenteams.Datastore.removePartyListing;
 import static me.kyrobi.cynagenteams.Menu.showGListings;
 import static me.kyrobi.cynagenteams.Menu.showLeaderboard;
 import static me.kyrobi.cynagenteams.Util.getPartyFromName;
@@ -67,7 +68,8 @@ public class CommandHandler implements CommandExecutor {
 
             if(option.equals("remove")){
                 myDataStore.remove(partyName);
-                player.sendMessage(ChatColor.GREEN + "Added your party to the recruitment board!");
+                removePartyListing(partyName);
+                player.sendMessage(ChatColor.GREEN + "Removed your party form the recruitment board!");
                 return false;
             }
 
